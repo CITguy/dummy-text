@@ -21,6 +21,7 @@
  *   string bang,
  * }
  */
+// TODO: write unit tests
 const DictionaryProxy = {
   get(target, prop) {
     // NOTE: assumes that target[prop] returns an array

@@ -1,4 +1,4 @@
-import { between } from './utils.mjs'
+import { between, interpolate } from './utils.mjs'
 import DictionaryProxy from './DictionaryProxy.mjs'
 
 /**
@@ -7,10 +7,13 @@ import DictionaryProxy from './DictionaryProxy.mjs'
 // TODO: write unit tests
 export default class DummyText {
   /**
-   * @param {object} config - JSON dictionary
+   * @param {object} dict - JSON dictionary
    */
-  constructor(config) {
-    this.config = config
+  constructor(dict) {
+    if (!dict) {
+      throw 'DummyText must be instantiated with a JSON dictionary'
+    }
+    this.dict = dict
   }
 
   /**
@@ -21,24 +24,33 @@ export default class DummyText {
       // Memoize a DictionaryProxy
       // Proxy object returns a random entry for the requested property.
       // Example: vocab.noun () => rawVocab.noun[randomIndex]
-      this._vocab = new Proxy(this.config, DictionaryProxy)
+      this._vocab = new Proxy(this.dict, DictionaryProxy)
     }
 
     return this._vocab
   }
 
-  // TODO: document - Understands "{prop}" syntax to insert a value from the dictionary proxy.
+  // TODO: document -- "{{prop}}" replaced by vocab[prop]
   get sentence() {
-    let _sentence = this.vocab.sentence
-
     // see https://regex101.com/r/S9MdAe/1
     let regVar = /({{[^}]*\b}})/g; // {{var}}
 
-    let interpolated = _sentence.replace(regVar, (match) => {
-      let prop = match.replace(/[{}]/g, '')
-      return this.vocab[prop]
-    })
+    let template = this.vocab.sentence
 
+    if (!template) {
+      return ''
+    }
+
+    let interpolated = interpolate(this.vocab.sentence, this.vocab)
+
+    /*
+    let interpolated = this.vocab.sentence.replace(regVar, (match) => {
+      let prop = match.replace(/[{}]/g, '') // {{foo}} -> foo
+      return this.vocab[prop] // vocab[foo]
+    })
+    */
+
+    // Ensure sentence starts with capital letter.
     let result = interpolated.replace(/^./, (match) => match.toUpperCase())
 
     return result

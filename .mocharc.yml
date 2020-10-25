@@ -1,4 +1,8 @@
+check-leaks: true
+reporter: min
 require:
   - esm
 spec:
   - src/**/*.spec.js
+watch-files:
+  - src/**/*

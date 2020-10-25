@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/CITguy/dummy-text.git"
   },
-  "author": "Ryan Johnson <rhino.citguy@gmail.com> (http://citguy.com/)",
+  "author": "Ryan Johnson (CITguy)",
   "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/CITguy/dummy-text/issues"
